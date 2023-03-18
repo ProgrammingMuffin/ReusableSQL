@@ -13,7 +13,20 @@ const (
 	IN     = "IN"
 )
 
+/*
+Lists all the token types
+*/
+const (
+	KEYWORD    = "KEYWORD"
+	OPERATOR   = "OPERATOR"
+	IDENTIFIER = "IDENTIFIER"
+)
+
 type Token struct {
-	tokenType string
-	value     string
+	TokenType string
+	Value     string
 }
+
+var TokenMap map[string]Token = make(map[string]Token)
+
+var TokenMapInitialized bool = false
