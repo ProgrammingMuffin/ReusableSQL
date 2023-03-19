@@ -1,4 +1,4 @@
-package usecases
+package lexUsecases
 
 import (
 	"github.com/ProgrammingMuffin/ReusableSQL/lexer/models"

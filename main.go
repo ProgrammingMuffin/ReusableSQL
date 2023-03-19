@@ -1,14 +1,11 @@
 package main
 
 import (
-	"fmt"
-
-	"github.com/ProgrammingMuffin/ReusableSQL/lexer/usecases"
+	"github.com/ProgrammingMuffin/ReusableSQL/lexer/lexUsecases"
+	"github.com/ProgrammingMuffin/ReusableSQL/parser/usecases"
 )
 
 func main() {
-	for _, val := range usecases.TokenizeSingleLineQuery("SELECT * FROM something WHERE something = something") {
-		fmt.Println(val)
-	}
-	return
+	tokenStream := lexUsecases.TokenizeSingleLineQuery("SELECT * FROM something")
+	usecases.ParseSingleLineQuery(tokenStream)
 }
