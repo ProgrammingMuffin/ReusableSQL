@@ -17,6 +17,7 @@ var tokens []models.Token
 
 func ParseSingleLineQuery(tokenStream []models.Token) {
 	tokens = tokenStream
+	fmt.Println(tokenStream)
 	parseStatement()
 }
 
@@ -24,8 +25,8 @@ func parseStatement() {
 	currentToken := tokens[tokenIndex]
 	switch currentToken.Value {
 	case models.SELECT:
-		val, _ := json.Marshal(parseSelect())
-		fmt.Println(string(val))
+		res := parseSelect()
+		printParseTree(res.Value)
 		fmt.Println(tokenIndex)
 	}
 }
@@ -33,7 +34,7 @@ func parseStatement() {
 func parseSelect() shared.Result[parserModels.SQLTree] {
 	accept(models.TokenMap[models.SELECT])
 	tree := parserModels.SelectTree{}
-	parseFields(tree)
+	parseFields(&tree)
 	accept(models.TokenMap[models.FROM])
 	res := parseIdent()
 	if res.Errored {
@@ -43,9 +44,14 @@ func parseSelect() shared.Result[parserModels.SQLTree] {
 	return shared.Result[parserModels.SQLTree]{Value: tree}
 }
 
-func parseFields(tree parserModels.SelectTree) shared.Result[parserModels.SQLTree] {
+func parseFields(tree *parserModels.SelectTree) shared.Result[parserModels.SQLTree] {
 	if tokens[tokenIndex].Value == models.STAR {
 		accept(models.TokenMap[models.STAR])
+		tree.Fields = append(tree.Fields, parserModels.IdentTree{Name: models.STAR})
+		res := parseFields(tree)
+		if res.Errored {
+			return res
+		}
 	} else {
 		if tokens[tokenIndex].Value == models.COMMA {
 			next()
@@ -82,4 +88,9 @@ func accept(token models.Token) {
 
 func next() {
 	tokenIndex++
+}
+
+func printParseTree(tree parserModels.SQLTree) {
+	val, _ := json.MarshalIndent(tree, "", "   ")
+	fmt.Println(string(val))
 }

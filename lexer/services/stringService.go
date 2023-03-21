@@ -28,12 +28,20 @@ func ConvertStringToTokenStream(str string) []models.Token {
 	str = re.ReplaceAllString(str, " ")
 	strList := strings.Split(str, " ")
 	for _, val := range strList {
-		mapVal, exists := models.TokenMap[strings.ToUpper(val)]
-		if exists == false {
-			tokenStream = append(tokenStream, models.Token{TokenType: models.IDENTIFIER, Value: strings.ToUpper(val)})
+		if val[len(val)-1] == ',' {
+			tokenStream = append(tokenStream, getToken(val[0:len(val)-1]), getToken(models.COMMA))
 		} else {
-			tokenStream = append(tokenStream, mapVal)
+			tokenStream = append(tokenStream, getToken(val))
 		}
 	}
 	return tokenStream
+}
+
+func getToken(val string) models.Token {
+	mapVal, exists := models.TokenMap[strings.ToUpper(val)]
+	if exists == false {
+		return models.Token{TokenType: models.IDENTIFIER, Value: strings.ToUpper(val)}
+	} else {
+		return mapVal
+	}
 }

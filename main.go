@@ -6,6 +6,6 @@ import (
 )
 
 func main() {
-	tokenStream := lexUsecases.TokenizeSingleLineQuery("SELECT * FROM something")
+	tokenStream := lexUsecases.TokenizeSingleLineQuery("SELECT *, *,  lol FROM something")
 	usecases.ParseSingleLineQuery(tokenStream)
 }
